@@ -1,12 +1,28 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+
+const TIMER = 3000
 
 export default function DeleteConfirmation({ onConfirm, onCancel }) {
-  console.log('TIMER SET');
+
+  const [remainingTime, setRemainingTime] = useState(TIMER);
 
   useEffect(() => {
+    const interval = setInterval(() => {
+      console.log('INTERVAL RUNNING');
+      setRemainingTime(prevTime => prevTime - 10);
+    }, 10);
+
+    // Cleanup function runs when the component unmounts
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  useEffect(() => {
+    console.log('TIMER SET');
     const timer = setTimeout(() => {
       onConfirm();
-    }, 3000);
+    }, TIMER);
 
     // 👇 The Cleanup Function
     return () => {
@@ -27,6 +43,7 @@ export default function DeleteConfirmation({ onConfirm, onCancel }) {
           Yes
         </button>
       </div>
+      <progress value={remainingTime} max={TIMER} />
     </div>
   );
 }
